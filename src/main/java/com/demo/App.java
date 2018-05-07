@@ -1,0 +1,47 @@
+package com.demo;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args ) throws InterruptedException {
+        System.out.println( "Hello World!" );
+
+//1.
+//        Ticket ticket_1 = new Ticket();
+//        new Thread(ticket_1).start();
+//        new Thread(ticket_1).start();
+//        new Thread(ticket_1).start();
+
+
+        BlockingQueue<PCData> queue = new LinkedBlockingDeque<>(10);
+        Producer p1 = new Producer(queue);
+        Producer p2 = new Producer(queue);
+        Producer p3 = new Producer(queue);
+        Consumer c1 = new Consumer(queue);
+        Consumer c2 = new Consumer(queue);
+        Consumer c3 = new Consumer(queue);
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(p1);
+        service.execute(p2);
+        service.execute(p3);
+        service.execute(c1);
+        service.execute(c2);
+        service.execute(c3);
+        Thread.sleep(10*1000);
+        p1.stop();
+        p2.stop();
+        p3.stop();
+        Thread.sleep(3000);
+        service.shutdown();
+    }
+
+
+}
